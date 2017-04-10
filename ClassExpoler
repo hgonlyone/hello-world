@@ -1,0 +1,83 @@
+package testreflect;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+/**
+ * 关于反射的一些定义：
+ * 能够来分析目的类能力的程序,称为反射。 
+ * ——参考来自Core Java Volume I——Fundamentals P197-P200
+ * 
+ */
+public class ClassExpoler {
+
+	/**
+	 * 在命令行输出所有目的类声明的构造器（方法）
+	 * 
+	 * @param Class
+	 *            object the analysed Class
+	 */
+	public static void printAllDeclaredConstructors(Class object) {
+		Constructor[] cons = object.getConstructors();
+		// 所有的类都必须有构造方法。所以cons.length>=1
+		System.out.println("Constructots:");
+		for (Constructor c : cons) {
+			System.out.println(c.toString());
+		}
+	}
+
+	/**
+	 * 在命令行输出所有目的类声明的方法
+	 * 
+	 * @param Class
+	 *            object the analysed Class
+	 */
+	public static void printAllDeclaredMethods(Class object) {
+		Method[] methods = object.getDeclaredMethods();
+		// 类中不一定声明了方法
+		System.out.println("Methods:");
+		for (int i = 0; i < methods.length; i++) {
+			System.out.println(methods[i].toString());
+		}
+	}
+
+	/**
+	 * 在命令行输出所有目的类声明的成员属性（字段、域）
+	 * 
+	 * @param Class
+	 *            object the analysed Class
+	 */
+	public static void printAllDeclaredFileds(Class object) {
+		Field[] fields = object.getDeclaredFields();
+		// 类中不一定有成员属性
+		System.out.println("Fileds:");
+		for (int i = 0; i < fields.length; i++) {
+			System.out.println(fields[i].toString());
+		}
+	}
+
+	public static void main(String[] agrs) {
+		try {
+     	/**
+			 * 1.通过已知类包的路径如Simple，可以直接让JVM去加载这个类，并且获取这个类类型的引用交给aim（是类类型Class，不是实例对象instantance）
+			 * 2.通过aim，可以获取到String的构造器，方法，字段等信息，无论是否私有（破坏类的封装性）
+			 * 3.至此，我们已经通过.class字节码文件，获取到了.java.源文件的类的信息。这就是反射的分析类作用。
+			 * 4.~明天再试试，如何利用反射来创建实例，并操作类的方法，修改类的属性等……
+			 */
+			Class aim = Class.forName("Simple");//e.g. java.lang.String，但像String这种JAVA核心包(java.*)的类以及Java拓展包API（javax.*）在JVM启动后就会自动加载。
+			System.out.printf("%s extends %s %n{%n", aim.toString(), aim.getSuperclass());
+			printAllDeclaredConstructors(aim);
+			System.out.println();
+			printAllDeclaredMethods(aim);
+			System.out.println();
+			printAllDeclaredFileds(aim);
+			System.out.println("}");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+      
+	}
+
+}
